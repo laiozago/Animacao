@@ -20,14 +20,14 @@ Se o Python 3.13 nao estiver instalado, instale-o primeiro e confirme que o laun
 
 ## Renderizar
 
-Adicione os executaveis do MiKTeX ao `PATH` da sessao e renderize a cena:
+As cenas estao configuradas para video vertical 9:16 (1080 x 1920). Adicione os executaveis do MiKTeX ao `PATH` da sessao e renderize:
 
 ```powershell
 $env:PATH = "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64;$env:PATH"
-manim -pql .\trigonometria.py SenoCossenoAnimacao
+manim -p -r 1080,1920 .\trigonometria.py SenoCossenoAnimacao
 ```
 
-O argumento `-pql` renderiza em qualidade baixa e abre o video ao terminar. O resultado fica em `media/videos/trigonometria/480p15/`.
+O video vertical e salvo em `media/videos/trigonometria/`.
 
 ## Licenca
 

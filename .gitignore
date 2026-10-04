@@ -1,9 +1,4 @@
-/circulo trigonometrico/**/__pycache__/
-/circulo trigonometrico/**/*.py[cod]
-/circulo trigonometrico/media/
 /.venv/
 **/__pycache__/
 **/*.py[cod]
-/planificacoes/**/__pycache__/
-/planificacoes/**/*.py[cod]
-/planificacoes/media/
+**/media/

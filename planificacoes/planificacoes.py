@@ -1,12 +1,18 @@
 from manim import *
 import numpy as np
 
+config.pixel_width = 1080
+config.pixel_height = 1920
+config.frame_height = 8
+config.frame_width = config.frame_height * config.pixel_width / config.pixel_height
+
+
 # -----------------------------------------------------------
 # 1. CUBO
 # -----------------------------------------------------------
 class PlanificacaoCubo(ThreeDScene):
     def construct(self):
-        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES)
+        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES, zoom=0.8)
         
         base = Square(side_length=2, fill_opacity=0.8, fill_color=BLUE_E, stroke_color=WHITE)
         
@@ -15,6 +21,15 @@ class PlanificacaoCubo(ThreeDScene):
         back = Square(side_length=2, fill_opacity=0.8, fill_color=ORANGE, stroke_color=WHITE).next_to(base, UP, buff=0)
         left = Square(side_length=2, fill_opacity=0.8, fill_color=GREEN_E, stroke_color=WHITE).next_to(base, LEFT, buff=0)
         right = Square(side_length=2, fill_opacity=0.8, fill_color=YELLOW_E, stroke_color=WHITE).next_to(base, RIGHT, buff=0)
+
+        unfolded_preview = VGroup(
+            base.copy(), front.copy(), top.copy(), back.copy(), left.copy(), right.copy()
+        )
+        net_scale = min(
+            1,
+            (config.frame_width - 0.4) / unfolded_preview.width,
+            (config.frame_height - 0.8) / unfolded_preview.height,
+        )
 
         # Dobra a tampa (top) em relação à frente (front)
         top.rotate(PI/2, axis=np.cross(DOWN, [0,0,1]), about_point=front.get_bottom())
@@ -32,6 +47,7 @@ class PlanificacaoCubo(ThreeDScene):
         self.wait(1)
         
         # Animação de Planificação (Desdobrando)
+        self.play(solid.animate.scale(net_scale), run_time=0.8)
         self.play(
             Rotate(front_group, -PI/2, axis=np.cross(DOWN, [0,0,1]), about_point=base.get_bottom()),
             Rotate(back, -PI/2, axis=np.cross(UP, [0,0,1]), about_point=base.get_top()),
@@ -54,7 +70,7 @@ class PlanificacaoCubo(ThreeDScene):
 # FUNÇÃO GERADORA DE PIRÂMIDES (Lógica Universal de Dobradura)
 # -----------------------------------------------------------
 def create_pyramid_scene(scene, N, radius, height, color):
-    scene.set_camera_orientation(phi=70 * DEGREES, theta=45 * DEGREES)
+    scene.set_camera_orientation(phi=70 * DEGREES, theta=45 * DEGREES, zoom=0.8)
     
     base = RegularPolygon(n=N, radius=radius, fill_opacity=0.8, fill_color=color, stroke_color=WHITE)
     vertices = base.get_vertices()
@@ -64,7 +80,7 @@ def create_pyramid_scene(scene, N, radius, height, color):
     fold_angle = PI - np.arccos(d/s)
     
     faces = VGroup()
-    anims_unfold = []
+    fold_axes = []
     
     for i in range(N):
         v1 = vertices[i]
@@ -77,12 +93,19 @@ def create_pyramid_scene(scene, N, radius, height, color):
         face = Polygon(v1, v2, apex_2d, fill_opacity=0.8, fill_color=color, stroke_color=WHITE)
         fold_axis = np.cross(direction, [0,0,1])
         
-        # Dobra para montar o sólido 3D
-        face.rotate(fold_angle, axis=fold_axis, about_point=edge_center)
-        
         faces.add(face)
-        # Salva o movimento de desdobrar para a animação
-        anims_unfold.append(Rotate(face, -fold_angle, axis=fold_axis, about_point=edge_center))
+        fold_axes.append(fold_axis)
+
+    unfolded_preview = VGroup(base.copy(), faces.copy())
+    net_scale = min(
+        1,
+        (config.frame_width - 0.4) / unfolded_preview.width,
+        (config.frame_height - 0.8) / unfolded_preview.height,
+    )
+
+    for face, axis, i in zip(faces, fold_axes, range(N)):
+        edge_center = (vertices[i] + vertices[(i + 1) % N]) / 2
+        face.rotate(fold_angle, axis=axis, about_point=edge_center)
         
     solid = VGroup(base, faces)
     
@@ -90,6 +113,17 @@ def create_pyramid_scene(scene, N, radius, height, color):
     scene.wait(1)
     
     # Anima a planificação
+    scene.play(solid.animate.scale(net_scale), run_time=0.8)
+    vertices = base.get_vertices()
+    anims_unfold = [
+        Rotate(
+            face,
+            -fold_angle,
+            axis=axis,
+            about_point=(vertices[i] + vertices[(i + 1) % N]) / 2,
+        )
+        for i, (face, axis) in enumerate(zip(faces, fold_axes))
+    ]
     scene.play(*anims_unfold, run_time=2)
     scene.wait(1)
     
@@ -124,11 +158,17 @@ class PlanificacaoPiramideHexagonal(ThreeDScene):
 # -----------------------------------------------------------
 class PlanificacaoCilindro(ThreeDScene):
     def construct(self):
-        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES)
+        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES, zoom=0.8)
         
         tracker = ValueTracker(1) # 1 = Cilindro Fechado, 0 = Planificado
+        scale_tracker = ValueTracker(1)
         R = 1.5
         H = 4
+        net_scale = min(
+            1,
+            (config.frame_width - 0.4) / (2 * PI * R),
+            (config.frame_height - 0.8) / (H + 2 * R),
+        )
         
         def cylinder_func(u, v):
             t = tracker.get_value()
@@ -136,14 +176,14 @@ class PlanificacaoCilindro(ThreeDScene):
                 x = (u - 0.5) * 2 * PI * R
                 y = (v - 0.5) * H
                 z = -R
-                return np.array([x, y, z])
+                return np.array([x, y, z]) * scale_tracker.get_value()
             else:
                 r = R / t
                 theta = (u - 0.5) * 2 * PI * t
                 x = r * np.sin(theta)
                 y = (v - 0.5) * H
                 z = -R + r - r * np.cos(theta)
-                return np.array([x, y, z])
+                return np.array([x, y, z]) * scale_tracker.get_value()
                 
         surface = always_redraw(lambda: Surface(
             cylinder_func,
@@ -154,16 +194,18 @@ class PlanificacaoCilindro(ThreeDScene):
         
         def top_cap_pos():
             t = tracker.get_value()
-            circle = Circle(radius=R, fill_color=TEAL_E, fill_opacity=0.8, stroke_color=WHITE)
-            circle.shift(UP * (H/2 + R) + IN * R)
-            circle.rotate(PI/2 * t, axis=RIGHT, about_point=np.array([0, H/2, -R]))
+            scale = scale_tracker.get_value()
+            circle = Circle(radius=R * scale, fill_color=TEAL_E, fill_opacity=0.8, stroke_color=WHITE)
+            circle.shift(scale * (UP * (H/2 + R) + IN * R))
+            circle.rotate(PI/2 * t, axis=RIGHT, about_point=scale * np.array([0, H/2, -R]))
             return circle
 
         def bot_cap_pos():
             t = tracker.get_value()
-            circle = Circle(radius=R, fill_color=TEAL_E, fill_opacity=0.8, stroke_color=WHITE)
-            circle.shift(DOWN * (H/2 + R) + IN * R)
-            circle.rotate(-PI/2 * t, axis=RIGHT, about_point=np.array([0, -H/2, -R]))
+            scale = scale_tracker.get_value()
+            circle = Circle(radius=R * scale, fill_color=TEAL_E, fill_opacity=0.8, stroke_color=WHITE)
+            circle.shift(scale * (DOWN * (H/2 + R) + IN * R))
+            circle.rotate(-PI/2 * t, axis=RIGHT, about_point=scale * np.array([0, -H/2, -R]))
             return circle
             
         top_cap = always_redraw(top_cap_pos)
@@ -175,6 +217,7 @@ class PlanificacaoCilindro(ThreeDScene):
         # Desdobrando o cilindro
         self.play(tracker.animate.set_value(0), run_time=3)
         self.wait(1)
+        self.play(scale_tracker.animate.set_value(net_scale), run_time=1)
         
         self.move_camera(phi=0, theta=-90*DEGREES, run_time=2)
         self.wait(2)
@@ -185,7 +228,7 @@ class PlanificacaoCilindro(ThreeDScene):
 # -----------------------------------------------------------
 class PlanificacaoCone(ThreeDScene):
     def construct(self):
-        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES)
+        self.set_camera_orientation(phi=65 * DEGREES, theta=45 * DEGREES, zoom=0.8)
         
         R = 1.5
         H = 3.5
@@ -193,9 +236,9 @@ class PlanificacaoCone(ThreeDScene):
         alpha = 2 * PI * R / s
         
         # Sólido 3D
-        cone = Cone(base_radius=R, height=H, direction=Y_AXIS, fill_color=PURPLE_E, fill_opacity=0.8)
-        cone.shift(DOWN * H/2)
-        base_cap_3d = Circle(radius=R, fill_color=PURPLE_E, fill_opacity=0.8).rotate(PI/2, RIGHT).shift(DOWN * H/2)
+        cone = Cone(base_radius=R, height=H, direction=OUT, fill_color=PURPLE_E, fill_opacity=0.8)
+        cone.shift(OUT * H/2)
+        base_cap_3d = Circle(radius=R, fill_color=PURPLE_E, fill_opacity=0.8).shift(IN * H/2)
         solid = VGroup(cone, base_cap_3d)
         
         # Planificação 2D (Setor Circular + Círculo da Base)
@@ -205,6 +248,11 @@ class PlanificacaoCone(ThreeDScene):
         base_cap_2d = Circle(radius=R, fill_color=PURPLE_E, fill_opacity=0.8, stroke_color=WHITE)
         base_cap_2d.next_to(sector, DOWN, buff=0)
         net = VGroup(sector, base_cap_2d)
+        net_scale = min(
+            (config.frame_width - 0.4) / net.width,
+            (config.frame_height - 0.8) / net.height,
+        )
+        net.scale(net_scale).move_to(ORIGIN)
         
         self.play(DrawBorderThenFill(solid))
         self.wait(1)

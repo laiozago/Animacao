@@ -4,8 +4,9 @@ Esta pasta reune projetos independentes. Cada projeto deve ficar em seu proprio 
 
 ## Projetos
 
-- [Circulo trigonometrico](circulo%20trigonometrico/README.md): animacao em Manim do circulo trigonometrico e das curvas de seno e cosseno.
-- [Planificacoes](planificacoes/README.md): animacoes em Manim das planificacoes de solidos geometricos.
+- [Circulo trigonometrico](circulo%20trigonometrico/README.md): animacao vertical 9:16 do circulo trigonometrico e das curvas de seno e cosseno.
+- [Planificacoes](planificacoes/README.md): animacoes verticais 9:16 das planificacoes de solidos geometricos.
+- [Desafio de geometria](desafio/README.md): animacao vertical 9:16 sobre a diagonal de um retangulo inscrito em um quarto de circulo.
 
 ## Ambiente Python
 
@@ -29,9 +30,12 @@ pasta-mae/
 |-- circulo trigonometrico/
 |   |-- README.md
 |   `-- arquivos do projeto
-`-- planificacoes/
+|-- planificacoes/
     |-- README.md
     `-- planificacoes.py
+`-- desafio/
+    |-- README.md
+    `-- desafio.py
 ```
 
 Ao adicionar um projeto, crie um novo diretorio e inclua nele um README proprio. Mantenha neste arquivo apenas o catalogo e as orientacoes que se aplicam a pasta como um todo; detalhes especificos, dependencias e comandos devem ficar no README do respectivo projeto.
