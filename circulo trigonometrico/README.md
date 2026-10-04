@@ -9,12 +9,11 @@ Cena Manim que demonstra o circulo trigonometrico, as curvas de seno e cosseno e
 
 ## Configuracao
 
-No PowerShell, crie o ambiente virtual e instale o Manim:
+Use o ambiente virtual compartilhado na raiz do repositorio. Se ainda nao o configurou, siga as instrucoes no [README principal](../README.md). No PowerShell, a partir da raiz, ative o ambiente e entre nesta pasta:
 
 ```powershell
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install manim==0.21.0
+.\.venv\Scripts\Activate.ps1
+Set-Location ".\circulo trigonometrico"
 ```
 
 Se o Python 3.13 nao estiver instalado, instale-o primeiro e confirme que o launcher `py` o reconhece com `py -0p`.
@@ -25,7 +24,11 @@ Adicione os executaveis do MiKTeX ao `PATH` da sessao e renderize a cena:
 
 ```powershell
 $env:PATH = "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64;$env:PATH"
-.\.venv\Scripts\manim.exe -pql .\trigonometria.py SenoCossenoAnimacao
+manim -pql .\trigonometria.py SenoCossenoAnimacao
 ```
 
 O argumento `-pql` renderiza em qualidade baixa e abre o video ao terminar. O resultado fica em `media/videos/trigonometria/480p15/`.
+
+## Licenca
+
+Este projeto agora e distribuido sob a GNU General Public License v3.0 (GPL-3.0). Esta licenca e menos permissiva que MIT/Apache, exigindo que qualquer distribuicao ou adaptacao do codigo continue aberto e sob os mesmos termos de uso, modificacao e redistribuicao.
