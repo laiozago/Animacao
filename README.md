@@ -7,6 +7,7 @@ Esta pasta reune projetos independentes. Cada projeto deve ficar em seu proprio 
 - [Circulo trigonometrico](circulo%20trigonometrico/README.md): animacao vertical 9:16 do circulo trigonometrico e das curvas de seno e cosseno.
 - [Planificacoes](planificacoes/README.md): animacoes verticais 9:16 das planificacoes de solidos geometricos.
 - [Desafio de geometria](desafio/README.md): animacao vertical 9:16 sobre a diagonal de um retangulo inscrito em um quarto de circulo.
+- [Resolucao da piramide](questao_piramide/README.md): animacao da piramide em formatos horizontal 16:9 e vertical 9:16.
 
 ## Ambiente Python
 
