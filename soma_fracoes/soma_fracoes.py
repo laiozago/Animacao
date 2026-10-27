@@ -3,6 +3,8 @@ from pathlib import Path
 from manim import *
 
 
+config.media_dir = str(Path(__file__).resolve().parent / "media")
+
 config.pixel_width = 540
 config.pixel_height = 960
 config.frame_height = 8
@@ -291,5 +293,4 @@ class SomaFracoes(Scene):
 
 
 if __name__ == "__main__":
-    config.media_dir = str(Path(__file__).resolve().parent / "media")
     SomaFracoes().render()

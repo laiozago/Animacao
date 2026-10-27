@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from manim import *
 import numpy as np
+
+config.media_dir = str(Path(__file__).resolve().parent / "media")
 
 config.pixel_width = 1080
 config.pixel_height = 1920

@@ -22,4 +22,4 @@ manim -p -r 1080,1920 planificacoes.py PlanificacaoCilindro
 manim -p -r 1080,1920 planificacoes.py PlanificacaoCone
 ```
 
-Os videos verticais sao salvos em `media/videos/planificacoes/`.
+Os videos verticais sao salvos em `media/videos/planificacoes/`, dentro desta pasta do projeto.

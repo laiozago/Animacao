@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from manim import *
+
+config.media_dir = str(Path(__file__).resolve().parent / "media")
 
 class GraficoPISM(Scene):
     def construct(self):

@@ -17,4 +17,4 @@ A cena esta configurada para video vertical 9:16 (1080 x 1920). Renderize:
 manim -p -r 1080,1920 desafio.py DesafioGeometria
 ```
 
-O video vertical e salvo em `media/videos/desafio/`.
+O video vertical e salvo em `media/videos/desafio/`, dentro desta pasta do projeto.

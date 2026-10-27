@@ -27,7 +27,7 @@ $env:PATH = "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64;$env:PATH"
 manim -p -r 1080,1920 .\trigonometria.py SenoCossenoAnimacao
 ```
 
-O video vertical e salvo em `media/videos/trigonometria/`.
+O video vertical e salvo em `media/videos/trigonometria/`, dentro desta pasta do projeto.
 
 ## Licenca
 
